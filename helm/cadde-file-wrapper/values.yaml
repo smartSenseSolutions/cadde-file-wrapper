@@ -19,15 +19,30 @@ cadde:
 
 ingress:
   enabled: false
-  className: ""
-  host: "cadde-file-wrapper.example.com"
+  className: "nginx"
+  host: "cadde-wrapper.tx.the-sense.io"
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # cert-manager.io/cluster-issuer: letsencrypt
-  tls: []
-  # - secretName: cadde-file-wrapper-tls
-  #   hosts:
-  #     - cadde-file-wrapper.example.com
+  tls:
+    enabled: false
+    secretName: "cadde-file-wrapper-tls"
+
+certManager:
+  enabled: false
+  issuerName: "letsencrypt-prod"
+  # issuerKind: ClusterIssuer (default) or Issuer
+  issuerKind: "ClusterIssuer"
+
+haproxy:
+  enabled: false
+  # Timeout in milliseconds
+  timeoutConnect: "5000"
+  timeoutClient: "50000"
+  timeoutServer: "50000"
+  # Rate limiting: max requests per period per IP
+  rateLimitRequests: ""
+  rateLimitPeriod: ""
+  # Extra HAProxy annotations (key: value)
+  annotations: {}
 
 # Sensitive values — override via --set or a secret values file
 secret:

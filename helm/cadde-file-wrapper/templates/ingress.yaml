@@ -5,17 +5,34 @@ metadata:
   name: {{ include "cadde-file-wrapper.fullname" . }}
   labels:
     {{- include "cadde-file-wrapper.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
   annotations:
+    {{- if .Values.certManager.enabled }}
+    cert-manager.io/{{ .Values.certManager.issuerKind | lower }}: {{ .Values.certManager.issuerName | quote }}
+    {{- end }}
+    {{- if .Values.haproxy.enabled }}
+    haproxy.org/timeout-connect: {{ .Values.haproxy.timeoutConnect | quote }}
+    haproxy.org/timeout-client: {{ .Values.haproxy.timeoutClient | quote }}
+    haproxy.org/timeout-server: {{ .Values.haproxy.timeoutServer | quote }}
+    {{- if .Values.haproxy.rateLimitRequests }}
+    haproxy.org/rate-limit-requests: {{ .Values.haproxy.rateLimitRequests | quote }}
+    haproxy.org/rate-limit-period: {{ .Values.haproxy.rateLimitPeriod | quote }}
+    {{- end }}
+    {{- with .Values.haproxy.annotations }}
     {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- end }}
+    {{- end }}
+    {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   {{- if .Values.ingress.className }}
   ingressClassName: {{ .Values.ingress.className }}
   {{- end }}
-  {{- if .Values.ingress.tls }}
+  {{- if .Values.ingress.tls.enabled }}
   tls:
-    {{- toYaml .Values.ingress.tls | nindent 4 }}
+    - hosts:
+        - {{ .Values.ingress.host }}
+      secretName: {{ .Values.ingress.tls.secretName }}
   {{- end }}
   rules:
     - host: {{ .Values.ingress.host }}
