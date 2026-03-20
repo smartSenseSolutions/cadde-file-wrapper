@@ -19,9 +19,10 @@ cadde:
 
 ingress:
   enabled: true
-  className: "nginx"
-  host: "cadde-wrapper.tx.the-sense.io"
-  annotations: {}
+  className: ""
+  host: "cadde-wrapper.127.0.0.1.nip.io"
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls: "true"
   tls:
     enabled: false
     secretName: "cadde-file-wrapper-tls"
