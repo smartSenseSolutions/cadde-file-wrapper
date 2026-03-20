@@ -9,7 +9,7 @@ spec:
   selector:
     {{- include "cadde-file-wrapper.selectorLabels" . | nindent 4 }}
   ports:
-    - name: {{ .Values.service.port | quote }}
+    - name: {{ .Values.service.name }}
       port: {{ .Values.service.port }}
       targetPort: 8000
       protocol: TCP
