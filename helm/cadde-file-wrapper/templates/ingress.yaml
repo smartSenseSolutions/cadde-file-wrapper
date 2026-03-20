@@ -5,6 +5,7 @@ metadata:
   name: {{ include "cadde-file-wrapper.fullname" . }}
   labels:
     {{- include "cadde-file-wrapper.labels" . | nindent 4 }}
+  {{- if or .Values.certManager.enabled .Values.haproxy.enabled .Values.ingress.annotations }}
   annotations:
     {{- if .Values.certManager.enabled }}
     cert-manager.io/{{ .Values.certManager.issuerKind | lower }}: {{ .Values.certManager.issuerName | quote }}
@@ -24,6 +25,7 @@ metadata:
     {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
+  {{- end }}
 spec:
   {{- if .Values.ingress.className }}
   ingressClassName: {{ .Values.ingress.className }}

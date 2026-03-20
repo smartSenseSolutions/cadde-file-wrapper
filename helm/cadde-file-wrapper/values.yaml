@@ -18,7 +18,7 @@ cadde:
   userId: "0001-hackathon"
 
 ingress:
-  enabled: false
+  enabled: true
   className: "nginx"
   host: "cadde-wrapper.tx.the-sense.io"
   annotations: {}
