@@ -1,0 +1,35 @@
+replicaCount: 1
+
+image:
+  repository: cadde-file-wrapper
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8000
+
+cadde:
+  tokenUrl: "https://cadde-authn.koshizukalab.dataspace.internal:18443/cadde/api/v4/token"
+  fileUrl: "https://cadde-consumer-0001.hackathon.dataspace.internal:1443/cadde/api/v4/file"
+  resourceBaseUrl: "http://data-management.koshizukalab.internal:8080"
+  resourceApiType: "file/http"
+  provider: "0003-koshizukalab"
+  userId: "0001-hackathon"
+
+ingress:
+  enabled: false
+  className: ""
+  host: "cadde-file-wrapper.example.com"
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # cert-manager.io/cluster-issuer: letsencrypt
+  tls: []
+  # - secretName: cadde-file-wrapper-tls
+  #   hosts:
+  #     - cadde-file-wrapper.example.com
+
+# Sensitive values — override via --set or a secret values file
+secret:
+  authBasic: "Basic d2ViYXBwLTAwMDEtaGFja2F0aG9uOjY3UmFKNFNYYUc5WmswNkJNbklOakZJbGdOZjlFUzZP"
+  password: "0001-hackathon"

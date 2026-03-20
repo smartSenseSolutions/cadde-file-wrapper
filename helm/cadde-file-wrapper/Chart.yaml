@@ -1,0 +1,6 @@
+apiVersion: v2
+name: cadde-file-wrapper
+description: Wraps CADDE file endpoint and returns CSV data as JSON
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
