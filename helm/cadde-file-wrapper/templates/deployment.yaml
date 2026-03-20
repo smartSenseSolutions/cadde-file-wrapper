@@ -19,20 +19,32 @@ spec:
         - name: wireguard-init
           image: linuxserver/wireguard:latest
           command:
-            - sh
+            - bash
             - -c
             - |
-              wg-quick up wg0
-              # Wait until the WireGuard interface is up and can reach the VPN network
+              set -e
+              echo "Setting up WireGuard tunnel..."
+              # Use raw commands so the interface is NOT torn down on exit
+              ip link add dev wg0 type wireguard
+              wg setconf wg0 <(grep -v "^Address\|^DNS\|^MTU" /etc/wireguard/wg0.conf)
+              ip -4 address add 10.250.254.212/32 dev wg0
+              ip link set mtu 1450 up dev wg0
+              # Add route for the VPN network
+              ip route add 10.250.0.0/16 dev wg0
+              echo "WireGuard interface is up, waiting for handshake..."
               for i in $(seq 1 30); do
-                if wg show wg0 2>/dev/null | grep -q "latest handshake"; then
-                  echo "WireGuard tunnel established"
+                HANDSHAKE=$(wg show wg0 latest-handshakes 2>/dev/null | awk '{print $2}')
+                if [ -n "$HANDSHAKE" ] && [ "$HANDSHAKE" != "0" ]; then
+                  echo "WireGuard tunnel established! Handshake at: $HANDSHAKE"
+                  wg show wg0
                   exit 0
                 fi
                 echo "Waiting for WireGuard handshake... ($i/30)"
                 sleep 2
               done
-              echo "WireGuard handshake not detected, proceeding anyway"
+              echo "WARNING: No handshake after 60s. Current state:"
+              wg show wg0
+              ip route show dev wg0
           securityContext:
             capabilities:
               add:
@@ -49,11 +61,23 @@ spec:
         - name: wireguard
           image: linuxserver/wireguard:latest
           command:
-            - sh
+            - bash
             - -c
             - |
-              wg-quick up wg0
-              sleep infinity
+              echo "WireGuard sidecar monitoring tunnel..."
+              # The init container already set up the interface.
+              # This sidecar keeps the pod alive and re-creates the tunnel if it drops.
+              while true; do
+                if ! wg show wg0 > /dev/null 2>&1; then
+                  echo "WireGuard interface down, recreating..."
+                  ip link add dev wg0 type wireguard 2>/dev/null || true
+                  wg setconf wg0 <(grep -v "^Address\|^DNS\|^MTU" /etc/wireguard/wg0.conf)
+                  ip -4 address add 10.250.254.212/32 dev wg0 2>/dev/null || true
+                  ip link set mtu 1450 up dev wg0
+                  ip route add 10.250.0.0/16 dev wg0 2>/dev/null || true
+                fi
+                sleep 30
+              done
           securityContext:
             capabilities:
               add:

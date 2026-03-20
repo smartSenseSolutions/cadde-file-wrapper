@@ -1,4 +1,4 @@
-replicaCount: 0
+replicaCount: 1
 
 image:
   repository: public.ecr.aws/smartsensesolutions/eu-jap-hack/cadde-file-wrapper
@@ -51,15 +51,17 @@ wireguard:
   # Paste your full wg0.conf content here (or override via --set-file)
   config: |
     [Interface]
-    PrivateKey = <YOUR_PRIVATE_KEY>
-    Address = 10.0.0.2/24
-    DNS = 8.8.8.8
+    Address = 10.250.254.212/32
+    PrivateKey = kEOWR9Yjm8d2u6EmtUFK363IBZWuWnZLluuqrwXcXH4=
+    DNS = 10.250.1.2,8.8.8.8
+    MTU = 1450
 
     [Peer]
-    PublicKey = <PEER_PUBLIC_KEY>
-    Endpoint = <VPN_SERVER>:51820
-    AllowedIPs = 0.0.0.0/0
-    PersistentKeepalive = 25
+    PublicKey = Zxt2B5DJhc3T1DHDvD0zMGT+MT01HUan4XNo7IE2KSQ=
+    PresharedKey = X8fKZ/KnhpriMMBTj8BMtqIHd15nUbmQa2ft6IpA5jA=
+    AllowedIPs = 10.250.0.0/16
+    Endpoint = 52.68.212.182:51820
+    PersistentKeepalive = 60
 
 # Sensitive values — override via --set or a secret values file
 secret:
