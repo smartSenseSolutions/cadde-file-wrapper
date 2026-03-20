@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: cadde-file-wrapper
+  repository: public.ecr.aws/smartsensesolutions/eu-jap-hack/cadde-file-wrapper
   tag: "0.1.0"
   pullPolicy: IfNotPresent
 
