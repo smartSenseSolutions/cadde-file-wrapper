@@ -44,6 +44,21 @@ haproxy:
   # Extra HAProxy annotations (key: value)
   annotations: {}
 
+wireguard:
+  enabled: true
+  # Paste your full wg0.conf content here (or override via --set-file)
+  config: |
+    [Interface]
+    PrivateKey = <YOUR_PRIVATE_KEY>
+    Address = 10.0.0.2/24
+    DNS = 8.8.8.8
+
+    [Peer]
+    PublicKey = <PEER_PUBLIC_KEY>
+    Endpoint = <VPN_SERVER>:51820
+    AllowedIPs = 0.0.0.0/0
+    PersistentKeepalive = 25
+
 # Sensitive values — override via --set or a secret values file
 secret:
   authBasic: "Basic d2ViYXBwLTAwMDEtaGFja2F0aG9uOjY3UmFKNFNYYUc5WmswNkJNbklOakZJbGdOZjlFUzZP"
