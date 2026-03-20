@@ -15,6 +15,17 @@ spec:
         {{- include "cadde-file-wrapper.selectorLabels" . | nindent 8 }}
     spec:
       {{- if .Values.wireguard.enabled }}
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+          - "10.250.1.2"
+          - "8.8.8.8"
+        searches:
+          - "infra.svc.cluster.local"
+          - "svc.cluster.local"
+          - "cluster.local"
+      {{- end }}
+      {{- if .Values.wireguard.enabled }}
       initContainers:
         - name: wireguard-init
           image: linuxserver/wireguard:latest
