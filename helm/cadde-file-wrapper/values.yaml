@@ -1,4 +1,4 @@
-replicaCount: 0
+replicaCount: 1
 
 image:
   repository: public.ecr.aws/smartsensesolutions/eu-jap-hack/cadde-file-wrapper
@@ -7,6 +7,7 @@ image:
 
 service:
   type: ClusterIP
+  name: http
   port: 8000
 
 cadde:
@@ -19,9 +20,8 @@ cadde:
 
 ingress:
   enabled: true
-  className: "nginx"
-  host: "cadde-wrapper.tx.the-sense.io"
-  annotations: {}
+  className: ""
+  host: "cadde-wrapper.127.0.0.1.nip.io"
   tls:
     enabled: false
     secretName: "cadde-file-wrapper-tls"
@@ -44,7 +44,13 @@ haproxy:
   # Extra HAProxy annotations (key: value)
   annotations: {}
 
+wireguard:
+  enabled: true
+  # Paste your full wg0.conf content here (or override via --set-file)
+  config: |
+    [Interface] <replace with wireguard config>
+
 # Sensitive values — override via --set or a secret values file
 secret:
-  authBasic: "Basic d2ViYXBwLTAwMDEtaGFja2F0aG9uOjY3UmFKNFNYYUc5WmswNkJNbklOakZJbGdOZjlFUzZP"
+  authBasic: "Basic <replace>"
   password: "0001-hackathon"

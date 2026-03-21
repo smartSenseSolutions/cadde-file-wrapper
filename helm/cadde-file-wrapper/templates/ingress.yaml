@@ -46,5 +46,5 @@ spec:
               service:
                 name: {{ include "cadde-file-wrapper.fullname" . }}
                 port:
-                  number: {{ .Values.service.port }}
+                  name: {{ .Values.service.name }}
 {{- end }}
